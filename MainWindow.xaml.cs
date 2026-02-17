@@ -119,14 +119,22 @@ namespace WebDemoExe
             InitializeComponent();
             AttachControlEventHandlers(webView);
 
-            if ((bool)dlg.Fullscreen.IsChecked)
+            if (autostart==false && (bool)dlg.Fullscreen.IsChecked)
             {
-                this.WindowStyle = WindowStyle.None;
-                this.Topmost = true;
-                this.WindowState = WindowState.Maximized;
+                this.SetFullscreen();
             }
 
             webView.Focus();
+        }
+
+        private bool _isFullscreen = false;
+
+        void SetFullscreen()
+        {
+            this.WindowStyle = WindowStyle.None;
+            this.Topmost = true;
+            this.WindowState = WindowState.Maximized;
+            _isFullscreen = true;
         }
 
         void AttachControlEventHandlers(WebView2 control)
@@ -538,6 +546,7 @@ namespace WebDemoExe
 
         private void sourceChanged(object sender, CoreWebView2SourceChangedEventArgs e)
         {
+            if (webView.Source.AbsoluteUri.Contains("webdemoexe_fullscreen") && !_isFullscreen) SetFullscreen();
 
             if (webView.Source.AbsoluteUri.Contains("webdemoexe_exit")) closeExe();
         }
